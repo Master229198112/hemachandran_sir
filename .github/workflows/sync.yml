@@ -13,16 +13,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.HEMA_SIR }}
+          token: ${{ secrets.OFFICIAL_GIT_TOKEN }}
 
       - name: Push to Official Repo
         env:
-          OFFICIAL_TOKEN: ${{ secrets.HEMA_SIR }}
+          OFFICIAL_TOKEN: ${{ secrets.OFFICIAL_GIT_TOKEN }}
         run: |
           # Configure Git Identity
           git config --global user.email "sync-bot@example.com"
           git config --global user.name "Sync Bot"
-          
+
           # Add remote and push
           git remote add official_repo https://x-access-token:${OFFICIAL_TOKEN}@github.com/hemachandrank2026/hemachandran_website.git
           git push official_repo Master --force
