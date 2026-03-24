@@ -41,7 +41,7 @@ export default function ContactPage() {
                 </div>
                 <div className={styles.infoItem}>
                   <Globe size={20} className={styles.infoIcon} />
-                  <p>hemachandrank1985@gmail.com</p>
+                  <p>hemachandran.k@woxsen.edu.in</p>
                 </div>
                 <div className={styles.infoItem}>
                   <MapPin size={20} className={styles.infoIcon} />
