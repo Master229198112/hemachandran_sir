@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Link from 'next/link';
 import styles from './books.module.css';
 import dbConnect from '@/lib/mongodb';

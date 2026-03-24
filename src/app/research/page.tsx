@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Link from 'next/link';
 import dbConnect from '@/lib/mongodb';
 import Publication from '@/models/Publication';
