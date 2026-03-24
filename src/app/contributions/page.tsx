@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styles from './contributions.module.css';
 
 const engagements = [
@@ -41,7 +42,7 @@ export default function ContributionsPage() {
     <>
       <div className="page-banner">
         <h1>Speaking <span className="accent-text">Engagements</span></h1>
-        <p className="breadcrumb"><a href="/">Home</a> / Contributions</p>
+        <p className="breadcrumb"><Link href="/">Home</Link> / Contributions</p>
       </div>
 
       <section className="section">

@@ -1,6 +1,8 @@
+import Link from 'next/link';
+import Image from 'next/image';
 import styles from './research.module.css';
 import dbConnect from '@/lib/mongodb';
-import Publication from '@/models/Publication';
+import Publication, { IPublication } from '@/models/Publication';
 
 async function getPublications() {
   try {
@@ -14,14 +16,14 @@ async function getPublications() {
 
 export default async function ResearchPage() {
   const publications = await getPublications();
-  const journals = publications.filter((p: any) => p.type === 'Journal');
-  const articles = publications.filter((p: any) => p.type === 'Article');
+  const journals = publications.filter((p: IPublication & { _id: string }) => p.type === 'Journal');
+  const articles = publications.filter((p: IPublication & { _id: string }) => p.type === 'Article');
 
   return (
     <>
       <div className="page-banner">
         <h1>Research <span className="accent-text">Gallery</span></h1>
-        <p className="breadcrumb"><a href="/">Home</a> / Research</p>
+        <p className="breadcrumb"><Link href="/">Home</Link> / Research</p>
       </div>
 
       <section className="section">
@@ -37,7 +39,7 @@ export default async function ResearchPage() {
                 <>
                   <h2 className={styles.categoryTitle}>Journals</h2>
                   <div className={styles.pubList}>
-                    {journals.map((pub: any) => (
+                    {journals.map((pub: IPublication & { _id: string }) => (
                       <div key={pub._id} className={styles.pubItem}>
                         <div className={styles.pubDot} />
                         <div>
@@ -58,9 +60,9 @@ export default async function ResearchPage() {
                 <>
                   <h2 className={styles.categoryTitle} style={{ marginTop: 60 }}>Articles</h2>
                   <div className="grid-3">
-                    {articles.map((pub: any) => (
+                    {articles.map((pub: IPublication & { _id: string }) => (
                       <a key={pub._id} href={pub.link} target="_blank" rel="noopener noreferrer" className={styles.articleCard}>
-                        {pub.thumbnail && <img src={pub.thumbnail} alt={pub.title} className={styles.articleImg} />}
+                        {pub.thumbnail && <Image src={pub.thumbnail} alt={pub.title} className={styles.articleImg} width={400} height={180} style={{ objectFit: 'cover' }} />}
                         <div className={styles.articleBody}>
                           <h3>{pub.title}</h3>
                           {pub.description && <p>{pub.description}</p>}

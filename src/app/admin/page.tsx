@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { BookOpen, FlaskConical, LogOut, Plus, Trash2, Loader2 } from 'lucide-react';
@@ -7,12 +7,34 @@ import styles from './admin.module.css';
 
 type Tab = 'books' | 'publications';
 
+interface BookItem {
+  _id: string;
+  title: string;
+  publisher: string;
+  publishedDate: string;
+  coverImage: string;
+  amazonLink?: string;
+  publisherLink?: string;
+  format: string;
+}
+
+interface PubItem {
+  _id: string;
+  title: string;
+  authors: string;
+  date: string;
+  link: string;
+  type: 'Journal' | 'Article';
+  thumbnail?: string;
+  description?: string;
+}
+
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>('books');
-  const [books, setBooks] = useState<any[]>([]);
-  const [publications, setPublications] = useState<any[]>([]);
+  const [books, setBooks] = useState<BookItem[]>([]);
+  const [publications, setPublications] = useState<PubItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Book form state
@@ -25,22 +47,39 @@ export default function AdminDashboard() {
     title: '', authors: '', date: '', link: '', type: 'Journal' as 'Journal' | 'Article', thumbnail: '', description: ''
   });
 
-  useEffect(() => {
-    if (status === 'unauthenticated') router.push('/admin/login');
-  }, [status, router]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    setLoading(true);
+  const loadData = useCallback(async () => {
     const [bRes, pRes] = await Promise.all([
       fetch('/api/books'),
       fetch('/api/publications'),
     ]);
-    setBooks(await bRes.json());
-    setPublications(await pRes.json());
+    const booksData = await bRes.json();
+    const pubsData = await pRes.json();
+    return { books: booksData, pubs: pubsData };
+  }, []);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/admin/login');
+      return;
+    }
+    if (status === 'authenticated') {
+      let cancelled = false;
+      loadData().then(({ books: b, pubs: p }: { books: BookItem[]; pubs: PubItem[] }) => {
+        if (!cancelled) {
+          setBooks(b);
+          setPublications(p);
+          setLoading(false);
+        }
+      });
+      return () => { cancelled = true; };
+    }
+  }, [status, router, loadData]);
+
+  const refreshData = async () => {
+    setLoading(true);
+    const data = await loadData();
+    setBooks(data.books);
+    setPublications(data.pubs);
     setLoading(false);
   };
 
@@ -48,26 +87,26 @@ export default function AdminDashboard() {
     e.preventDefault();
     await fetch('/api/books', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bookForm) });
     setBookForm({ title: '', publisher: '', publishedDate: '', coverImage: '', amazonLink: '', publisherLink: '', format: 'Paperback' });
-    fetchData();
+    refreshData();
   };
 
   const deleteBook = async (id: string) => {
     if (!confirm('Delete this book?')) return;
     await fetch(`/api/books/${id}`, { method: 'DELETE' });
-    fetchData();
+    refreshData();
   };
 
   const addPub = async (e: React.FormEvent) => {
     e.preventDefault();
     await fetch('/api/publications', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pubForm) });
     setPubForm({ title: '', authors: '', date: '', link: '', type: 'Journal', thumbnail: '', description: '' });
-    fetchData();
+    refreshData();
   };
 
   const deletePub = async (id: string) => {
     if (!confirm('Delete this publication?')) return;
     await fetch(`/api/publications/${id}`, { method: 'DELETE' });
-    fetchData();
+    refreshData();
   };
 
   if (status === 'loading' || loading) {
@@ -118,7 +157,7 @@ export default function AdminDashboard() {
           </form>
 
           <div className={styles.itemList}>
-            {books.map((book: any) => (
+            {books.map((book: BookItem) => (
               <div key={book._id} className={styles.item}>
                 <div>
                   <h4>{book.title}</h4>
@@ -152,7 +191,7 @@ export default function AdminDashboard() {
           </form>
 
           <div className={styles.itemList}>
-            {publications.map((pub: any) => (
+            {publications.map((pub: PubItem) => (
               <div key={pub._id} className={styles.item}>
                 <div>
                   <h4>{pub.title}</h4>

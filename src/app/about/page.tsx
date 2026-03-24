@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import Image from 'next/image';
 import styles from './about.module.css';
 
 const roles = [
@@ -44,7 +46,7 @@ export default function AboutPage() {
     <>
       <div className="page-banner">
         <h1>About <span className="accent-text">Me</span></h1>
-        <p className="breadcrumb"><a href="/">Home</a> / About</p>
+        <p className="breadcrumb"><Link href="/">Home</Link> / About</p>
       </div>
 
       <section className="section">
@@ -79,7 +81,7 @@ export default function AboutPage() {
           <div className={styles.logoRow}>
             {affiliations.map((a, i) => (
               <div key={i} className={styles.logoItem}>
-                <img src={a.img} alt={a.name} />
+                <Image src={a.img} alt={a.name} width={120} height={50} style={{ objectFit: 'contain' }} />
               </div>
             ))}
           </div>

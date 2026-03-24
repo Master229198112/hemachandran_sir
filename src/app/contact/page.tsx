@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Phone, Globe, MapPin, Linkedin } from 'lucide-react';
 import styles from './contact.module.css';
 
@@ -6,13 +7,13 @@ export default function ContactPage() {
     <>
       <div className="page-banner">
         <h1>Get in <span className="accent-text">Touch</span></h1>
-        <p className="breadcrumb"><a href="/">Home</a> / Contact</p>
+        <p className="breadcrumb"><Link href="/">Home</Link> / Contact</p>
       </div>
 
       <section className="section">
         <div className="container">
           <p className={styles.intro}>
-            Fill out the form below for general inquiries, and I&apos;ll be in touch within 2 business days. If you&apos;re looking for books, please visit the <a href="/books">Books</a> page.
+            Fill out the form below for general inquiries, and I&apos;ll be in touch within 2 business days. If you&apos;re looking for books, please visit the <Link href="/books">Books</Link> page.
           </p>
 
           <div className={styles.contactGrid}>

@@ -1,6 +1,8 @@
+import Link from 'next/link';
+import Image from 'next/image';
 import styles from './books.module.css';
 import dbConnect from '@/lib/mongodb';
-import Book from '@/models/Book';
+import Book, { IBook } from '@/models/Book';
 
 async function getBooks() {
   try {
@@ -19,7 +21,7 @@ export default async function BooksPage() {
     <>
       <div className="page-banner">
         <h1>Innovative <span className="accent-text">Masterpieces</span></h1>
-        <p className="breadcrumb"><a href="/">Home</a> / Books</p>
+        <p className="breadcrumb"><Link href="/">Home</Link> / Books</p>
       </div>
 
       <section className="section">
@@ -34,10 +36,10 @@ export default async function BooksPage() {
             </p>
           ) : (
             <div className="grid-3">
-              {books.map((book: any) => (
+              {books.map((book: IBook & { _id: string }) => (
                 <div key={book._id} className={styles.bookCard}>
                   <div className={styles.coverWrap}>
-                    <img src={book.coverImage} alt={book.title} className={styles.cover} />
+                    <Image src={book.coverImage} alt={book.title} className={styles.cover} fill sizes="(max-width: 768px) 100vw, 33vw" />
                     <div className={styles.overlay}>
                       <h3>{book.title}</h3>
                       <p className={styles.meta}>{book.publisher} · {book.publishedDate}</p>
