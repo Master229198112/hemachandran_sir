@@ -2,13 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
-    const formData = await req.formData();
-    
-    // Convert FormData to a standard JSON object to avoid Node.js multipart boundary bugs
-    const object: Record<string, string | File> = {};
-    formData.forEach((value, key) => {
-      object[key] = value;
-    });
+    const object = await req.json();
     
     // The server securely appends the private access key without exposing it to the browser
     const accessKey = process.env.WEB3FORMS_ACCESS_KEY || '5c40ad72-eedb-4e5a-a1e7-53faf8f1e868';
@@ -23,7 +17,14 @@ export async function POST(req: Request) {
       body: JSON.stringify(object)
     });
 
-    const data = await response.json();
+    const responseText = await response.text();
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      console.warn('Web3Forms returned non-JSON:', responseText);
+      data = { message: 'Unexpected response from mail server.' };
+    }
     
     if (response.ok) {
       return NextResponse.json(data);

@@ -29,12 +29,19 @@ function ContactForm() {
     setStatus('loading');
     
     const formData = new FormData(e.currentTarget);
-    // The access_key is now securely injected on the server side
+    const payload: Record<string, string> = {};
+    formData.forEach((value, key) => {
+      payload[key] = value.toString();
+    });
 
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
       });
       const data = await response.json();
       
