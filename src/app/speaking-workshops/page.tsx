@@ -157,9 +157,9 @@ export default async function SpeakingWorkshopsPage() {
                 <li className="mb-3"><CheckCircle size={16} className="text-accent" /> Fluent in English delivery</li>
                 <li className="mb-3"><CheckCircle size={16} className="text-accent" /> Customization calls included for every engagement</li>
               </ul>
-              <button className="btn btn-outline mb-4 flex align-center gap-2">
+              <a href="/Hemachandran_Executive_Bio.pdf" target="_blank" rel="noopener noreferrer" download="Dr_Hemachandran_Executive_Bio.pdf" className="btn btn-outline mb-4 inline-flex align-center gap-2">
                 <Download size={18} /> Download Executive Bio
-              </button>
+              </a>
             </div>
             <div className="card text-center bg-dark" style={{ padding: '40px' }}>
               <h3 className="mb-4" style={{ fontSize: '1.75rem' }}>Ready to Inspire Your Audience?</h3>
