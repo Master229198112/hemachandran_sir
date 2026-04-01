@@ -535,15 +535,20 @@ export default function AdminDashboard() {
               </div>
               
             </div>
-            <h4 style={{ marginTop: 24, marginBottom: 12 }}>Dynamic Counts</h4>
+            <h4 style={{ marginTop: 24, marginBottom: 12 }}>Static Counts</h4>
             <div className={styles.formGrid}>
-              <input type="number" placeholder="Patents Count" value={settings.counts.patents} onChange={e => setSettings({...settings, counts: {...settings.counts, patents: parseInt(e.target.value) || 0}})} />
-              <input type="number" placeholder="Books Count" value={settings.counts.books} onChange={e => setSettings({...settings, counts: {...settings.counts, books: parseInt(e.target.value) || 0}})} />
-              <input type="number" placeholder="Articles Count" value={settings.counts.articles} onChange={e => setSettings({...settings, counts: {...settings.counts, articles: parseInt(e.target.value) || 0}})} />
-              <input type="number" placeholder="Keynotes Count" value={settings.counts.keynotes} onChange={e => setSettings({...settings, counts: {...settings.counts, keynotes: parseInt(e.target.value) || 0}})} />
-              <input type="number" placeholder="Partnerships Count" value={settings.counts.partnerships} onChange={e => setSettings({...settings, counts: {...settings.counts, partnerships: parseInt(e.target.value) || 0}})} />
-              <input type="number" placeholder="Fellows Count" value={settings.counts.fellows} onChange={e => setSettings({...settings, counts: {...settings.counts, fellows: parseInt(e.target.value) || 0}})} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ fontSize: '0.9rem', color: '#ccc' }}>Global Keynotes Count</label>
+                <input type="number" placeholder="Keynotes Count" value={settings.counts.keynotes} onChange={e => setSettings({...settings, counts: {...settings.counts, keynotes: parseInt(e.target.value) || 0}})} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ fontSize: '0.9rem', color: '#ccc' }}>Global Executive Fellows Count</label>
+                <input type="number" placeholder="Fellows Count" value={settings.counts.fellows} onChange={e => setSettings({...settings, counts: {...settings.counts, fellows: parseInt(e.target.value) || 0}})} />
+              </div>
             </div>
+            <p className="text-muted text-sm mt-4 border-t border-gray pt-4" style={{ marginTop: '24px' }}>
+              <strong>Note:</strong> Patents, Books, Articles, and Partnerships are automatically calculated directly from the database based on the records you add in their respective tabs.
+            </p>
             
             <button type="submit" className="btn btn-primary" style={{ marginTop: 24 }}>Save Settings</button>
           </form>

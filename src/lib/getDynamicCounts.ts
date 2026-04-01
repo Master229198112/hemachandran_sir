@@ -3,6 +3,7 @@ import Settings from '@/models/Settings';
 import Patent from '@/models/Patent';
 import Book from '@/models/Book';
 import Publication from '@/models/Publication';
+import Affiliation from '@/models/Affiliation';
 
 export async function getDynamicCounts() {
   try {
@@ -17,13 +18,14 @@ export async function getDynamicCounts() {
     const realPatents = await Patent.countDocuments();
     const realBooks = await Book.countDocuments();
     const realArticles = await Publication.countDocuments();
+    const realAffiliations = await Affiliation.countDocuments();
 
     return {
       patents: realPatents > 0 ? realPatents : (manualCounts.patents || 50),
       books: realBooks > 0 ? realBooks : (manualCounts.books || 50),
       articles: realArticles > 0 ? realArticles : (manualCounts.articles || 100),
       keynotes: manualCounts.keynotes || 38,
-      partnerships: manualCounts.partnerships || 80,
+      partnerships: realAffiliations > 0 ? realAffiliations : (manualCounts.partnerships || 80),
       fellows: manualCounts.fellows || 120,
     };
   } catch (error) {
