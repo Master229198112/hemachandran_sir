@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Globe, MapPin, Linkedin, Calendar as CalendarIcon, ArrowRight } from 'lucide-react';
 import styles from './contact.module.css';
@@ -22,9 +22,36 @@ function ContactForm() {
   const showEventDetails = interests.keynote || interests.workshop;
   const showOrgDetails = interests.advisory || interests.consulting || interests.workshop || interests.keynote;
 
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus('loading');
+    
+    const formData = new FormData(e.currentTarget);
+    // The access_key is now securely injected on the server side
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        setStatus('success');
+        e.currentTarget.reset();
+        setTimeout(() => setStatus('idle'), 6000); // Reset after 6 seconds
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    }
+  };
+
   return (
-    <form action="https://api.web3forms.com/submit" method="POST" className={styles.form}>
-      <input type="hidden" name="access_key" value="5c40ad72-eedb-4e5a-a1e7-53faf8f1e868" />
+    <form onSubmit={handleSubmit} className={styles.form}>
       
       <div className={styles.checkboxGroup}>
         <p className="mb-3 font-bold text-sm uppercase tracking-wider text-muted">What would you like to discuss?</p>
@@ -82,9 +109,22 @@ function ContactForm() {
 
       <textarea name="message" placeholder="Please provide additional details about your inquiry..." rows={5} required />
       
-      <button type="submit" className="btn btn-primary w-full mt-4 flex justify-center gap-2 align-center">
-        Submit Inquiry <ArrowRight size={18} />
+      <button type="submit" disabled={status === 'loading'} className="btn btn-primary w-full mt-4 flex justify-center gap-2 align-center">
+        {status === 'loading' ? 'Sending Inquiry...' : (
+          <>Submit Inquiry <ArrowRight size={18} /></>
+        )}
       </button>
+
+      {status === 'success' && (
+        <div className="mt-4 p-4 rounded text-center" style={{ backgroundColor: 'rgba(249, 180, 1, 0.1)', border: '1px solid var(--accent)', color: 'var(--accent)' }}>
+          <strong>Message Sent Successfully!</strong><br/><span className="text-sm">Thank you for reaching out. We will get back to you shortly.</span>
+        </div>
+      )}
+      {status === 'error' && (
+        <div className="mt-4 p-4 rounded text-center" style={{ backgroundColor: 'rgba(255, 0, 0, 0.1)', border: '1px solid #ff4444', color: '#ff4444' }}>
+          <strong>Failed to send message.</strong><br/><span className="text-sm">Please try again later or contact me directly via email.</span>
+        </div>
+      )}
     </form>
   );
 }
