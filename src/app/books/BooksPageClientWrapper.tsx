@@ -3,13 +3,29 @@ import { useState } from 'react';
 import { ExternalLink, BookOpen, Quote, FileText, Presentation } from 'lucide-react';
 import styles from './books.module.css';
 
+interface StartHereItem {
+  title: string;
+  desc: string;
+  type: string;
+}
+
+interface PublicationItem {
+  title: string;
+  authors?: string;
+  publisher?: string;
+  publishedDate?: string;
+  date?: string;
+  link?: string;
+  amazonLink?: string;
+}
+
 interface BooksWrapperProps {
-  counts: any;
-  startHereData: any[];
-  books: any[];
-  journals: any[];
-  conferences: any[];
-  cases: any[];
+  counts: Record<string, number>;
+  startHereData: StartHereItem[];
+  books: PublicationItem[];
+  journals: PublicationItem[];
+  conferences: PublicationItem[];
+  cases: PublicationItem[];
 }
 
 export default function BooksPageClientWrapper({
@@ -21,6 +37,12 @@ export default function BooksPageClientWrapper({
   cases
 }: BooksWrapperProps) {
   const [activeTab, setActiveTab] = useState('books');
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handleTabChange = (id: string) => {
+    setActiveTab(id);
+    setCurrentPage(1);
+  };
 
   const tabs = [
     { id: 'books', label: 'Books', icon: <BookOpen size={16} />, data: books },
@@ -30,6 +52,14 @@ export default function BooksPageClientWrapper({
   ];
 
   const currentData = tabs.find((t) => t.id === activeTab)?.data || [];
+
+  // Pagination logic
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(currentData.length / itemsPerPage);
+  const displayData = currentData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div style={{ paddingTop: '80px' }}>
@@ -66,15 +96,15 @@ export default function BooksPageClientWrapper({
               <button
                 key={t.id}
                 className={`${styles.tabBtn} ${activeTab === t.id ? styles.activeTab : ''}`}
-                onClick={() => setActiveTab(t.id)}
+                onClick={() => handleTabChange(t.id)}
               >
-                {t.icon} {t.label} 
+                {t.icon} <span style={{ marginLeft: '4px' }}>{t.label}</span>
               </button>
             ))}
           </div>
 
           <div className="grid-2 mt-8">
-            {currentData.slice(0, 15).map((item: any, idx) => {
+            {displayData.map((item: PublicationItem, idx: number) => {
               const hrefLink = item.link || item.amazonLink;
               
               const CardContent = (
@@ -108,8 +138,23 @@ export default function BooksPageClientWrapper({
             })}
           </div>
           
-          <div className="text-center mt-12">
-             <a href="https://scholar.google.co.in/citations?user=xGa-DEcAAAAJ&hl=en" target="_blank" rel="noreferrer" className="btn btn-outline inline-flex align-center gap-2">
+          {totalPages > 1 && (
+            <div className="flex justify-center gap-2" style={{ marginTop: '30px', marginBottom: '30px' }}>
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button
+                  key={i}
+                  className={`btn ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline'}`}
+                  style={{ padding: '8px 16px', minWidth: '40px', borderRadius: '4px' }}
+                  onClick={() => setCurrentPage(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="text-center mt-8">
+             <a href="https://scholar.google.co.in/citations?user=xGa-DEcAAAAJ&hl=en" target="_blank" rel="noreferrer" className="btn btn-outline inline-flex align-center gap-2" style={{ padding: '12px 24px' }}>
                 View Full List on Google Scholar <ExternalLink size={18} />
              </a>
           </div>

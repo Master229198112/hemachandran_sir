@@ -519,7 +519,7 @@ export default function AdminDashboard() {
             <div className={styles.formGrid}>
               
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center', backgroundColor: '#111', padding: '0 8px', borderRadius: '8px' }}>
-                <input style={{ background: 'transparent', border: 'none', padding: 0 }} placeholder="Home Page Image URL *" value={settings.homeImage} onChange={e => setSettings({...settings, homeImage: e.target.value})} required />
+                <input style={{ background: 'transparent', border: 'none', padding: 0 }} placeholder="Home Page Image URL" value={settings.homeImage} onChange={e => setSettings({...settings, homeImage: e.target.value})} />
                 <label style={{ cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', padding: '4px 12px', background: 'var(--accent)', color: '#000', borderRadius: '4px', fontWeight: 'bold' }}>
                   {uploading ? <Loader2 size={14} className={styles.spin} /> : <UploadCloud size={14} />} Upload
                   <input type="file" accept="image/*" hidden onChange={(e) => handleImageUpload(e, (url) => setSettings({...settings, homeImage: url}))} />
@@ -527,7 +527,7 @@ export default function AdminDashboard() {
               </div>
 
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center', backgroundColor: '#111', padding: '0 8px', borderRadius: '8px' }}>
-                <input style={{ background: 'transparent', border: 'none', padding: 0 }} placeholder="About Page Image URL *" value={settings.aboutImage} onChange={e => setSettings({...settings, aboutImage: e.target.value})} required />
+                <input style={{ background: 'transparent', border: 'none', padding: 0 }} placeholder="About Page Image URL" value={settings.aboutImage} onChange={e => setSettings({...settings, aboutImage: e.target.value})} />
                 <label style={{ cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', padding: '4px 12px', background: 'var(--accent)', color: '#000', borderRadius: '4px', fontWeight: 'bold' }}>
                   {uploading ? <Loader2 size={14} className={styles.spin} /> : <UploadCloud size={14} />} Upload
                   <input type="file" accept="image/*" hidden onChange={(e) => handleImageUpload(e, (url) => setSettings({...settings, aboutImage: url}))} />
