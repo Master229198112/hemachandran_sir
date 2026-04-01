@@ -222,3 +222,49 @@
   .statsGrid { grid-template-columns: repeat(2, 1fr); }
   .heroCtaGrid { grid-template-columns: 1fr; }
 }
+
+/* Affiliations Slider */
+.affiliationsSection {
+  background: var(--bg-secondary);
+  overflow: hidden;
+  padding-bottom: 60px;
+}
+
+.logoWrapper {
+  overflow: hidden;
+  width: 100%;
+}
+
+.logoRow {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 60px;
+  align-items: center;
+  width: max-content;
+  animation: scroll 30s linear infinite;
+}
+
+.logoRow:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.logoItem {
+  background: transparent;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.logoItem:hover {
+  transform: scale(1.1);
+}
+
+.logoItem img {
+  height: 90px;
+  object-fit: contain;
+  filter: brightness(0.9);
+}

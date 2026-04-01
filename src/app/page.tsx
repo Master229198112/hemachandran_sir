@@ -1,8 +1,10 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Mic, Briefcase, Code, Presentation, ShieldCheck, Award, Zap, Building, Users, BookOpen } from 'lucide-react';
 import styles from './page.module.css';
 import dbConnect from '@/lib/mongodb';
 import Settings from '@/models/Settings';
+import Affiliation from '@/models/Affiliation';
 import { getDynamicCounts } from '@/lib/getDynamicCounts';
 
 export default async function Home() {
@@ -13,6 +15,9 @@ export default async function Home() {
   const counts = await getDynamicCounts();
   const { patents, books, articles, keynotes, partnerships, fellows } = counts;
   const heroImage = settings.homeImage || 'https://res.cloudinary.com/dbeuhgjct/image/upload/v1774345756/portfolio/ohrc69ohfkspk9s472da.webp';
+
+  const rawAffiliations = await Affiliation.find({}).sort({ order: 1, createdAt: -1 }).lean();
+  const affiliations = JSON.parse(JSON.stringify(rawAffiliations));
 
   return (
     <>
@@ -42,7 +47,7 @@ export default async function Home() {
             </div>
           </div>
           <div className={styles.heroImageWrapper}>
-            <img src={heroImage} alt="Dr. Hemachandran K" />
+            <Image src={heroImage} alt="Dr. Hemachandran K" width={500} height={600} priority style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
         </div>
       </section>
@@ -122,6 +127,24 @@ export default async function Home() {
               <p>AI leadership programs for C‑suite, boards and senior executives.</p>
               <span className={styles.cardLink}>Learn More <ArrowRight size={16} /></span>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 4.5 Members & Affiliations Slider */}
+      <section className={`section ${styles.affiliationsSection}`}>
+        <div className="container" style={{ overflow: 'hidden' }}>
+          <h2 className="section-title text-center" style={{ marginBottom: 40 }}>
+            Members &amp; <span className="accent-text">Affiliations</span>
+          </h2>
+          <div className={styles.logoWrapper}>
+            <div className={styles.logoRow}>
+              {[...affiliations, ...affiliations].map((a: { _id: string, name: string, img: string }, i: number) => (
+                <div key={`${a._id || i}-${i}`} className={styles.logoItem}>
+                  <Image src={a.img} alt={a.name || 'Affiliation'} width={200} height={90} style={{ objectFit: 'contain' }} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
