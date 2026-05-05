@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import Image from 'next/image';
 import { Calendar, CalendarDays, MapPin, ArrowRight, X, ExternalLink } from 'lucide-react';
 import styles from './UpcomingEvents.module.css';
 
@@ -58,10 +59,23 @@ export default function UpcomingEvents({ events }: { events: EventItem[] }) {
               {events.map((event, index) => (
                 <div
                   key={event._id}
-                  className={styles.eventCard}
+                  className={`${styles.eventCard} ${event.imageUrl ? styles.eventCardWithImage : ''}`}
                   style={{ animationDelay: `${index * 0.1}s` }}
                   onClick={() => setSelectedEvent(event)}
                 >
+                  {/* Event Image Thumbnail */}
+                  {event.imageUrl && (
+                    <div className={styles.eventImageThumb}>
+                      <Image
+                        src={event.imageUrl}
+                        alt={event.title}
+                        fill
+                        sizes="120px"
+                        style={{ objectFit: 'cover' }}
+                      />
+                    </div>
+                  )}
+
                   {/* Date badge */}
                   <div className={styles.dateBadge}>
                     <span className={styles.dateMonth}>{getMonthShort(event.startDate)}</span>
@@ -119,6 +133,19 @@ export default function UpcomingEvents({ events }: { events: EventItem[] }) {
             <button className={styles.modalClose} onClick={() => setSelectedEvent(null)}>
               <X size={20} />
             </button>
+
+            {/* Modal Banner Image */}
+            {selectedEvent.imageUrl && (
+              <div className={styles.modalImage}>
+                <Image
+                  src={selectedEvent.imageUrl}
+                  alt={selectedEvent.title}
+                  fill
+                  sizes="560px"
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
+            )}
 
             <div className={styles.modalDateBadge}>
               <span className={styles.dateMonth}>{getMonthShort(selectedEvent.startDate)}</span>
