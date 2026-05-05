@@ -126,61 +126,64 @@ export default function UpcomingEvents({ events }: { events: EventItem[] }) {
         </div>
       </section>
 
-      {/* Event Detail Modal */}
+      {/* Event Detail Popup */}
       {selectedEvent && (
         <div className={styles.modalOverlay} onClick={() => setSelectedEvent(null)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+          <div className={`${styles.modal} ${selectedEvent.imageUrl ? styles.modalLandscape : ''}`} onClick={(e) => e.stopPropagation()}>
             <button className={styles.modalClose} onClick={() => setSelectedEvent(null)}>
               <X size={20} />
             </button>
 
-            {/* Modal Banner Image */}
+            {/* Left: Image Panel */}
             {selectedEvent.imageUrl && (
-              <div className={styles.modalImage}>
+              <div className={styles.modalImagePanel}>
                 <Image
                   src={selectedEvent.imageUrl}
                   alt={selectedEvent.title}
                   fill
-                  sizes="560px"
+                  sizes="(max-width: 768px) 100vw, 400px"
                   style={{ objectFit: 'cover' }}
                 />
               </div>
             )}
 
-            <div className={styles.modalDateBadge}>
-              <span className={styles.dateMonth}>{getMonthShort(selectedEvent.startDate)}</span>
-              <span className={styles.dateDay}>{getDay(selectedEvent.startDate)}</span>
-            </div>
+            {/* Right: Content Panel */}
+            <div className={styles.modalContentPanel}>
+              <div className={styles.modalDateBadge}>
+                <span className={styles.dateMonth}>{getMonthShort(selectedEvent.startDate)}</span>
+                <span className={styles.dateDay}>{getDay(selectedEvent.startDate)}</span>
+              </div>
 
-            <h3 className={styles.modalTitle}>{selectedEvent.title}</h3>
+              <h3 className={styles.modalTitle}>{selectedEvent.title}</h3>
 
-            <div className={styles.modalMeta}>
-              <span className={styles.metaItem}>
-                <Calendar size={16} />
-                {formatDateRange(selectedEvent.startDate, selectedEvent.endDate)}
-              </span>
-              {selectedEvent.location && (
+              <div className={styles.modalMeta}>
                 <span className={styles.metaItem}>
-                  <MapPin size={16} />
-                  {selectedEvent.location}
+                  <Calendar size={16} />
+                  {formatDateRange(selectedEvent.startDate, selectedEvent.endDate)}
                 </span>
+                {selectedEvent.location && (
+                  <span className={styles.metaItem}>
+                    <MapPin size={16} />
+                    {selectedEvent.location}
+                  </span>
+                )}
+              </div>
+
+              {selectedEvent.description && (
+                <p className={styles.modalDesc}>{selectedEvent.description}</p>
+              )}
+
+              {selectedEvent.link && (
+                <a
+                  href={selectedEvent.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`btn btn-primary ${styles.modalLink}`}
+                >
+                  View Event <ExternalLink size={16} />
+                </a>
               )}
             </div>
-
-            {selectedEvent.description && (
-              <p className={styles.modalDesc}>{selectedEvent.description}</p>
-            )}
-
-            {selectedEvent.link && (
-              <a
-                href={selectedEvent.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`btn btn-primary ${styles.modalLink}`}
-              >
-                View Event <ExternalLink size={16} />
-              </a>
-            )}
           </div>
         </div>
       )}
