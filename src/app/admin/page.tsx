@@ -423,7 +423,7 @@ export default function AdminDashboard() {
           <CalendarDays size={18} /> Events ({events.length})
         </button>
         <button className={`${styles.tab} ${activeTab === 'partners' ? styles.tabActive : ''}`} onClick={() => handleTabChange('partners')}>
-          <Handshake size={18} /> Partners & MoUs ({partners.length})
+          <Handshake size={18} /> Clients / Partners ({partners.length})
         </button>
         <button className={`${styles.tab} ${activeTab === 'settings' ? styles.tabActive : ''}`} onClick={() => handleTabChange('settings')}>
           <SettingsIcon size={18} /> Settings
@@ -681,7 +681,7 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* ═══════════════ Partners & MoUs Tab ═══════════════ */}
+      {/* ═══════════════ Clients & Partners Tab ═══════════════ */}
       {activeTab === 'partners' && (
         <div className={styles.content}>
           <form onSubmit={savePartner} className={styles.addForm}>
@@ -692,23 +692,6 @@ export default function AdminDashboard() {
             <div className={styles.formGrid}>
               <input placeholder="Organization Name *" value={partnerForm.name} onChange={e => setPartnerForm({...partnerForm, name: e.target.value})} required />
               
-              <select 
-                value={partnerForm.type} 
-                onChange={e => setPartnerForm({...partnerForm, type: e.target.value as 'client' | 'mou'})}
-                style={{
-                  background: 'var(--bg-primary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '8px',
-                  padding: '10px 14px',
-                  color: 'var(--text-primary)',
-                  fontFamily: "'Inter', sans-serif"
-                }}
-                required
-              >
-                <option value="client">Client Logo</option>
-                <option value="mou">MoU Signed</option>
-              </select>
-
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center', backgroundColor: '#111', padding: '0 8px', borderRadius: '8px' }}>
                 <input style={{ background: 'transparent', border: 'none', padding: 0 }} placeholder="Logo Image URL *" value={partnerForm.imageUrl} onChange={e => setPartnerForm({...partnerForm, imageUrl: e.target.value})} required />
                 <label style={{ cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', padding: '4px 12px', background: 'var(--accent)', color: '#000', borderRadius: '4px', fontWeight: 'bold' }}>
@@ -730,15 +713,6 @@ export default function AdminDashboard() {
                   <div>
                     <h4>{pat.name}</h4>
                     <p style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ 
-                        padding: '2px 8px', 
-                        borderRadius: '12px', 
-                        fontSize: '0.75rem', 
-                        background: pat.type === 'client' ? 'rgba(249, 180, 1, 0.2)' : 'rgba(100, 150, 255, 0.2)',
-                        color: pat.type === 'client' ? 'var(--accent)' : '#a0c0ff'
-                      }}>
-                        {pat.type === 'client' ? 'Client' : 'MoU Signed'}
-                      </span>
                       Order: {pat.order}
                     </p>
                   </div>

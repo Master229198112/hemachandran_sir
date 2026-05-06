@@ -18,8 +18,7 @@ export default async function AIConsultingPage() {
   await dbConnect();
   
   const allPartners = await Partner.find({}).sort({ order: 1, createdAt: -1 }).lean();
-  const clients = allPartners.filter((p) => p.type === 'client').map((p) => ({ _id: p._id.toString(), name: p.name, imageUrl: p.imageUrl }));
-  const mous = allPartners.filter((p) => p.type === 'mou').map((p) => ({ _id: p._id.toString(), name: p.name, imageUrl: p.imageUrl }));
+  const clients = allPartners.map((p) => ({ _id: p._id.toString(), name: p.name, imageUrl: p.imageUrl }));
 
   return (
     <div className={styles.page}>
@@ -137,6 +136,19 @@ export default async function AIConsultingPage() {
               </div>
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* Products Link Section */}
+      <section className="section text-center" style={{ padding: '0 0 60px' }}>
+        <div className="container">
+          <div className="bg-secondary p-8 rounded border border-gray">
+            <h3 className="mb-3">Explore Our Production-Ready Solutions</h3>
+            <p className="text-muted mb-6 max-w-2xl mx-auto">Discover our suite of AI products designed for enterprise scale and governance.</p>
+            <a href="https://www.aircwou.in/products" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+              View Products <ArrowRight size={18} className="inline ml-2" />
+            </a>
           </div>
         </div>
       </section>
@@ -271,11 +283,10 @@ export default async function AIConsultingPage() {
       </section>
 
       {/* Logos Section */}
-      {(clients.length > 0 || mous.length > 0) && (
+      {clients.length > 0 && (
         <section className="section bg-secondary" style={{ padding: '30px 0 20px', borderTop: '1px solid var(--border-color)' }}>
           <div className="container">
-            {clients.length > 0 && <ScrollingLogos title="Trusted Clients" logos={clients} />}
-            {mous.length > 0 && <div style={{ marginTop: clients.length > 0 ? '60px' : '0' }}><ScrollingLogos title="MoUs Signed" logos={mous} /></div>}
+            <ScrollingLogos title="Trusted Clients" logos={clients} />
           </div>
         </section>
       )}
