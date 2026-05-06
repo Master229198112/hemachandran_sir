@@ -9,7 +9,11 @@ export async function POST(req: Request) {
     
     // Extract the form fields from the frontend request
     // The frontend sends an array of subjects, so we join them if it's an array, or just use it as string.
-    const { name, email, message, keynote, advisory, consulting, workshop } = object;
+    const { 
+      name, email, message, 
+      keynote, advisory, consulting, workshop,
+      organization, role, date, audience, budget 
+    } = object;
     
     // Construct subject based on checked interests
     const topics = [];
@@ -31,6 +35,11 @@ export async function POST(req: Request) {
         <p><strong>Name:</strong> ${name || 'Not provided'}</p>
         <p><strong>Email:</strong> ${email || 'Not provided'}</p>
         <p><strong>Subject / Topics:</strong> ${subject}</p>
+        ${organization ? `<p><strong>Organization:</strong> ${organization}</p>` : ''}
+        ${role ? `<p><strong>Role/Title:</strong> ${role}</p>` : ''}
+        ${date ? `<p><strong>Proposed Date:</strong> ${date}</p>` : ''}
+        ${audience ? `<p><strong>Audience Type:</strong> ${audience}</p>` : ''}
+        ${budget ? `<p><strong>Est. Budget:</strong> ${budget}</p>` : ''}
         <hr />
         <h3>Message:</h3>
         <p style="white-space: pre-wrap;">${message || 'No additional message.'}</p>
