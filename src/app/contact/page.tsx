@@ -30,7 +30,9 @@ function ContactForm() {
     setStatus('loading');
     setErrorMessage('');
     
-    const formData = new FormData(e.currentTarget);
+    // Store a reference to the form since e.currentTarget becomes null after await
+    const form = e.currentTarget;
+    const formData = new FormData(form);
     const payload: Record<string, string> = {};
     formData.forEach((value, key) => {
       payload[key] = value.toString();
@@ -58,7 +60,7 @@ function ContactForm() {
       
       if (data.success) {
         setStatus('success');
-        e.currentTarget.reset();
+        form.reset();
         setTimeout(() => setStatus('idle'), 6000); // Reset after 6 seconds
       } else {
         setErrorMessage(data.message || 'Unknown server error');
