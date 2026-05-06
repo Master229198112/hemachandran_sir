@@ -7,7 +7,7 @@ import styles from './Navbar.module.css';
 
 const navLinks = [
   { href: '/speaking-workshops', label: 'Speaking & Workshops' },
-  { href: '/ai-consulting', label: 'AI Consulting' },
+  { href: '/ai-consulting', label: 'Consulting Services' },
   { href: '/leadership-advisory', label: 'Leadership & Advisory' },
   { href: '/research', label: 'Research & Innovations' },
   { href: '/books', label: 'Books & Publications' },

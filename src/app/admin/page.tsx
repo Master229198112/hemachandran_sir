@@ -2,11 +2,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { BookOpen, FlaskConical, LogOut, Plus, Trash2, Loader2, Users, UploadCloud, Edit2, X, Shield, Settings as SettingsIcon, Key, CalendarDays } from 'lucide-react';
+import { BookOpen, FlaskConical, LogOut, Plus, Trash2, Loader2, Users, UploadCloud, Edit2, X, Shield, Settings as SettingsIcon, Key, CalendarDays, Handshake } from 'lucide-react';
 import styles from './admin.module.css';
 import Pagination from '@/components/Pagination';
 
-type Tab = 'books' | 'publications' | 'affiliations' | 'patents' | 'events' | 'settings' | 'security';
+type Tab = 'books' | 'publications' | 'affiliations' | 'patents' | 'events' | 'partners' | 'settings' | 'security';
 
 interface SettingsItem {
   homeImage: string;
@@ -37,6 +37,14 @@ interface PatentItem {
   title: string;
   date?: string;
   link?: string;
+  order?: number;
+}
+
+interface PartnerItem {
+  _id: string;
+  name: string;
+  imageUrl: string;
+  type: 'client' | 'mou';
   order?: number;
 }
 
@@ -80,6 +88,7 @@ export default function AdminDashboard() {
   const [affiliations, setAffiliations] = useState<AffiliationItem[]>([]);
   const [patents, setPatents] = useState<PatentItem[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
+  const [partners, setPartners] = useState<PartnerItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -92,6 +101,7 @@ export default function AdminDashboard() {
   const [affilPage, setAffilPage] = useState(1);
   const [patPage, setPatPage] = useState(1);
   const [eventPage, setEventPage] = useState(1);
+  const [partnerPage, setPartnerPage] = useState(1);
 
   // Book form state
   const [bookForm, setBookForm] = useState({
@@ -118,6 +128,11 @@ export default function AdminDashboard() {
     title: '', startDate: '', endDate: '', location: '', description: '', imageUrl: '', link: ''
   });
 
+  // Partner form state
+  const [partnerForm, setPartnerForm] = useState({
+    name: '', imageUrl: '', type: 'client', order: 0
+  });
+
   const resetForms = () => {
     setEditingId(null);
     setBookForm({ title: '', publisher: '', publishedDate: '', coverImage: '', amazonLink: '', publisherLink: '', format: 'Paperback' });
@@ -125,6 +140,7 @@ export default function AdminDashboard() {
     setAffilForm({ name: '', img: '', order: 0 });
     setPatentForm({ title: '', date: '', link: '', order: 0 });
     setEventForm({ title: '', startDate: '', endDate: '', location: '', description: '', imageUrl: '', link: '' });
+    setPartnerForm({ name: '', imageUrl: '', type: 'client', order: 0 });
   };
 
   const handleTabChange = (t: Tab) => {
@@ -151,13 +167,14 @@ export default function AdminDashboard() {
   };
 
   const loadData = useCallback(async () => {
-    const [bRes, pRes, aRes, patRes, evtRes, setRes] = await Promise.all([
+    const [bRes, pRes, aRes, patRes, evtRes, setRes, partRes] = await Promise.all([
       fetch('/api/books'),
       fetch('/api/publications'),
       fetch('/api/affiliations'),
       fetch('/api/patents'),
       fetch('/api/events'),
       fetch('/api/settings'),
+      fetch('/api/partners'),
     ]);
     const booksData = await bRes.json();
     const pubsData = await pRes.json();
@@ -165,7 +182,8 @@ export default function AdminDashboard() {
     const patData = await patRes.json();
     const evtData = await evtRes.json();
     const setData = await setRes.json();
-    return { books: booksData, pubs: pubsData, affils: affilData, pats: patData, evts: evtData, settingsData: setData };
+    const partData = await partRes.json();
+    return { books: booksData, pubs: pubsData, affils: affilData, pats: patData, evts: evtData, settingsData: setData, parts: partData };
   }, []);
 
   useEffect(() => {
@@ -175,7 +193,7 @@ export default function AdminDashboard() {
     }
     if (status === 'authenticated') {
       let cancelled = false;
-      loadData().then(({ books: b, pubs: p, affils: a, pats: pt, evts: ev, settingsData: s }: { books: BookItem[]; pubs: PubItem[]; affils: AffiliationItem[]; pats: PatentItem[]; evts: EventItem[]; settingsData: SettingsItem | null }) => {
+      loadData().then(({ books: b, pubs: p, affils: a, pats: pt, evts: ev, settingsData: s, parts: part }: { books: BookItem[]; pubs: PubItem[]; affils: AffiliationItem[]; pats: PatentItem[]; evts: EventItem[]; settingsData: SettingsItem | null; parts: PartnerItem[] }) => {
         if (!cancelled) {
           setBooks(b);
           setPublications(p);
@@ -183,6 +201,7 @@ export default function AdminDashboard() {
           setPatents(pt);
           setEvents(ev);
           setSettings(s);
+          setPartners(part);
           setLoading(false);
         }
       });
@@ -199,6 +218,7 @@ export default function AdminDashboard() {
     setPatents(data.pats);
     setEvents(data.evts);
     setSettings(data.settingsData);
+    setPartners(data.parts);
     setLoading(false);
   };
 
@@ -310,6 +330,26 @@ export default function AdminDashboard() {
     refreshData();
   };
 
+  // --- Partners CRUD ---
+  const savePartner = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const url = editingId ? `/api/partners/${editingId}` : '/api/partners';
+    const method = editingId ? 'PUT' : 'POST';
+    await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(partnerForm) });
+    resetForms();
+    refreshData();
+  };
+  const startEditPartner = (p: PartnerItem) => {
+    setPartnerForm({ name: p.name, imageUrl: p.imageUrl, type: p.type as 'client' | 'mou', order: p.order || 0 });
+    setEditingId(p._id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  const deletePartner = async (id: string) => {
+    if (!confirm('Delete this logo?')) return;
+    await fetch(`/api/partners/${id}`, { method: 'DELETE' });
+    refreshData();
+  };
+
   // --- Settings & Security ---
   const saveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -381,6 +421,9 @@ export default function AdminDashboard() {
         </button>
         <button className={`${styles.tab} ${activeTab === 'events' ? styles.tabActive : ''}`} onClick={() => handleTabChange('events')}>
           <CalendarDays size={18} /> Events ({events.length})
+        </button>
+        <button className={`${styles.tab} ${activeTab === 'partners' ? styles.tabActive : ''}`} onClick={() => handleTabChange('partners')}>
+          <Handshake size={18} /> Partners & MoUs ({partners.length})
         </button>
         <button className={`${styles.tab} ${activeTab === 'settings' ? styles.tabActive : ''}`} onClick={() => handleTabChange('settings')}>
           <SettingsIcon size={18} /> Settings
@@ -635,6 +678,79 @@ export default function AdminDashboard() {
             ))}
           </div>
           <Pagination currentPage={eventPage} totalPages={Math.ceil(events.length / ITEMS_PER_PAGE)} onPageChange={setEventPage} />
+        </div>
+      )}
+
+      {/* ═══════════════ Partners & MoUs Tab ═══════════════ */}
+      {activeTab === 'partners' && (
+        <div className={styles.content}>
+          <form onSubmit={savePartner} className={styles.addForm}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3>{editingId ? <><Edit2 size={18} /> Edit Logo</> : <><Plus size={18} /> Add New Logo</>}</h3>
+              {editingId && <button type="button" onClick={resetForms} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer' }}><X size={20} /></button>}
+            </div>
+            <div className={styles.formGrid}>
+              <input placeholder="Organization Name *" value={partnerForm.name} onChange={e => setPartnerForm({...partnerForm, name: e.target.value})} required />
+              
+              <select 
+                value={partnerForm.type} 
+                onChange={e => setPartnerForm({...partnerForm, type: e.target.value as 'client' | 'mou'})}
+                style={{
+                  background: 'var(--bg-primary)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '8px',
+                  padding: '10px 14px',
+                  color: 'var(--text-primary)',
+                  fontFamily: "'Inter', sans-serif"
+                }}
+                required
+              >
+                <option value="client">Client Logo</option>
+                <option value="mou">MoU Signed</option>
+              </select>
+
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', backgroundColor: '#111', padding: '0 8px', borderRadius: '8px' }}>
+                <input style={{ background: 'transparent', border: 'none', padding: 0 }} placeholder="Logo Image URL *" value={partnerForm.imageUrl} onChange={e => setPartnerForm({...partnerForm, imageUrl: e.target.value})} required />
+                <label style={{ cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', padding: '4px 12px', background: 'var(--accent)', color: '#000', borderRadius: '4px', fontWeight: 'bold' }}>
+                  {uploading ? <Loader2 size={14} className={styles.spin} /> : <UploadCloud size={14} />} Upload
+                  <input type="file" accept="image/*" hidden onChange={(e) => handleImageUpload(e, (url) => setPartnerForm({...partnerForm, imageUrl: url}))} />
+                </label>
+              </div>
+
+              <input type="number" placeholder="Sort Order" value={partnerForm.order} onChange={e => setPartnerForm({...partnerForm, order: parseInt(e.target.value) || 0})} />
+            </div>
+            <button type="submit" className="btn btn-primary" style={{ marginTop: 12 }}>{editingId ? 'Save Changes' : 'Add Logo'}</button>
+          </form>
+
+          <div className={styles.itemList}>
+            {partners.slice((partnerPage - 1) * ITEMS_PER_PAGE, partnerPage * ITEMS_PER_PAGE).map((pat) => (
+              <div key={pat._id} className={styles.item} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <img src={pat.imageUrl} alt={pat.name} style={{ width: '60px', height: '60px', objectFit: 'contain', background: '#fff', borderRadius: '4px', padding: '4px' }} />
+                  <div>
+                    <h4>{pat.name}</h4>
+                    <p style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ 
+                        padding: '2px 8px', 
+                        borderRadius: '12px', 
+                        fontSize: '0.75rem', 
+                        background: pat.type === 'client' ? 'rgba(249, 180, 1, 0.2)' : 'rgba(100, 150, 255, 0.2)',
+                        color: pat.type === 'client' ? 'var(--accent)' : '#a0c0ff'
+                      }}>
+                        {pat.type === 'client' ? 'Client' : 'MoU Signed'}
+                      </span>
+                      Order: {pat.order}
+                    </p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => startEditPartner(pat)} className={styles.deleteBtn} style={{ color: 'var(--accent)' }}><Edit2 size={16} /></button>
+                  <button onClick={() => deletePartner(pat._id)} className={styles.deleteBtn}><Trash2 size={16} /></button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Pagination currentPage={partnerPage} totalPages={Math.ceil(partners.length / ITEMS_PER_PAGE)} onPageChange={setPartnerPage} />
         </div>
       )}
 

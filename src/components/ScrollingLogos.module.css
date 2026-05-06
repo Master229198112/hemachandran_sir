@@ -1,0 +1,89 @@
+.container {
+  width: 100%;
+  margin: 40px 0;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.scrollWrapper {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.scrollWrapper::before,
+.scrollWrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 100px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.scrollWrapper::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-primary), transparent);
+}
+
+.scrollWrapper::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-primary), transparent);
+}
+
+.scrollArea {
+  display: flex;
+  gap: 32px;
+  overflow-x: auto;
+  padding: 20px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  cursor: grab;
+}
+
+.scrollArea:active {
+  cursor: grabbing;
+}
+
+.scrollArea::-webkit-scrollbar {
+  display: none;
+}
+
+.logoCard {
+  flex: 0 0 auto;
+  width: 180px;
+  height: 100px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.logoCard:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(249, 180, 1, 0.08);
+}
+
+.logoImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: grayscale(100%) opacity(0.6);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.logoCard:hover .logoImage {
+  filter: grayscale(0%) opacity(1);
+}
