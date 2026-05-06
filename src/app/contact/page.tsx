@@ -23,10 +23,12 @@ function ContactForm() {
   const showOrgDetails = interests.advisory || interests.consulting || interests.workshop || interests.keynote;
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('loading');
+    setErrorMessage('');
     
     const formData = new FormData(e.currentTarget);
     const payload: Record<string, string> = {};
@@ -43,16 +45,31 @@ function ContactForm() {
         },
         body: JSON.stringify(payload)
       });
-      const data = await response.json();
+      
+      const responseText = await response.text();
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        setErrorMessage(`Server returned invalid JSON: ${responseText.substring(0, 50)}...`);
+        setStatus('error');
+        return;
+      }
       
       if (data.success) {
         setStatus('success');
         e.currentTarget.reset();
         setTimeout(() => setStatus('idle'), 6000); // Reset after 6 seconds
       } else {
+        setErrorMessage(data.message || 'Unknown server error');
         setStatus('error');
       }
-    } catch {
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrorMessage(err.message || 'Network error');
+      } else {
+        setErrorMessage('Unknown network error');
+      }
       setStatus('error');
     }
   };
@@ -129,7 +146,7 @@ function ContactForm() {
       )}
       {status === 'error' && (
         <div className="mt-4 p-4 rounded text-center" style={{ backgroundColor: 'rgba(255, 0, 0, 0.1)', border: '1px solid #ff4444', color: '#ff4444' }}>
-          <strong>Failed to send message.</strong><br/><span className="text-sm">Please try again later or contact me directly via email.</span>
+          <strong>Failed to send message.</strong><br/><span className="text-sm">{errorMessage || 'Please try again later or contact me directly via email.'}</span>
         </div>
       )}
     </form>
