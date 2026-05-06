@@ -204,9 +204,9 @@ export default function ContactPage() {
               </div>
 
               <div className="mt-8 pt-8 border-t border-gray">
-                <a href="#" className="btn btn-outline flex align-center justify-center gap-2 w-full">
+                {/* <a href="#" className="btn btn-outline flex align-center justify-center gap-2 w-full">
                   <CalendarIcon size={18} /> Schedule via Calendly
-                </a>
+                </a> */}
                 <p className="text-xs text-muted mt-3 text-center">For pre-qualified introductory calls only.</p>
               </div>
             </div>
