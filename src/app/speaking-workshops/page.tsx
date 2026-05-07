@@ -45,7 +45,7 @@ export default async function SpeakingWorkshopsPage() {
 
             <div className="card">
               <Mic size={28} className="text-accent mb-4" />
-              <h3>Ethical AI Governance in the Enterprise</h3>
+              <h3>Ethical AI Governance &amp; Enterprise Risk</h3>
               <p className="text-muted text-sm mb-4"><strong>Audience:</strong> Board Members, Legal Teams, Enterprise Leaders</p>
               <ul className={styles.bulletList}>
                 <li><CheckCircle size={16} className="text-accent" /> Navigating global regulations (EU AI Act, UNESCO guidelines).</li>
@@ -115,6 +115,54 @@ export default async function SpeakingWorkshopsPage() {
                 </ul>
               </div>
             </div>
+
+            <div className={styles.workshopCard}>
+              <div className={styles.workshopHeader}>
+                <h3>Leading The Transformation With AI-Powered Precision</h3>
+                <span className={styles.badge}><Calendar size={14} className="inline mr-1"/> 5-Hour Immersive</span>
+              </div>
+              <p className="mb-4">Designed for CEOs, MDs, and Strategy VPs.</p>
+              <div className="bg-dark p-4 rounded mb-4" style={{ borderLeft: '3px solid var(--accent)', paddingLeft: '24px' }}>
+                <h4 className="text-sm uppercase tracking-wider mb-3" style={{ color: 'var(--accent)', opacity: 0.9 }}>Core Deliverables</h4>
+                <ul className={styles.bulletList}>
+                  <li className="mb-2"><ChevronRight size={16} className="text-muted" /> <strong>Evidence-Based Maturity Score:</strong> Benchmark performance against global AI adoption standards.</li>
+                  <li className="mb-2"><ChevronRight size={16} className="text-muted" /> <strong>Cyber-Resilience Playbook:</strong> A red-team checklist for proactive risk mitigation.</li>
+                  <li className="mt-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}><Target size={16} className="text-accent" /> <strong className="text-accent">Outcome:</strong> The Precision Roadmap (1-page personal action plan).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className={styles.workshopCard}>
+              <div className={styles.workshopHeader}>
+                <h3>The AI-Human Hybrid (Sales &amp; Marketing Focus)</h3>
+                <span className={styles.badge}><Calendar size={14} className="inline mr-1"/> 1-Day Intensive</span>
+              </div>
+              <p className="mb-4">Designed for Marketing Managers and Business Development Leads. (Co-facilitated with Dr. Revanth Kumar Guttena).</p>
+              <div className="bg-dark p-4 rounded mb-4" style={{ borderLeft: '3px solid var(--accent)', paddingLeft: '24px' }}>
+                <h4 className="text-sm uppercase tracking-wider mb-3" style={{ color: 'var(--accent)', opacity: 0.9 }}>Core Deliverables</h4>
+                <ul className={styles.bulletList}>
+                  <li className="mb-2"><ChevronRight size={16} className="text-muted" /> <strong>The Hybrid Model:</strong> Balancing AI precision with &quot;Imagineering&quot; for customer experience.</li>
+                  <li className="mb-2"><ChevronRight size={16} className="text-muted" /> <strong>Silo-Busting Integration:</strong> Deploying a unified AI-CRM workflow.</li>
+                  <li className="mt-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}><Target size={16} className="text-accent" /> <strong className="text-accent">Outcome:</strong> 30-Day Hybrid Roadmap with AI-verified metrics.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className={styles.workshopCard}>
+              <div className={styles.workshopHeader}>
+                <h3>Leading in Complexity &amp; Organizational Sensemaking</h3>
+                <span className={styles.badge}><Calendar size={14} className="inline mr-1"/> 1-Day Immersive</span>
+              </div>
+              <p className="mb-4">Targeted at CXOs, Transformation Leaders, and Public Sector Officials.</p>
+              <div className="bg-dark p-4 rounded mb-4" style={{ borderLeft: '3px solid var(--accent)', paddingLeft: '24px' }}>
+                <h4 className="text-sm uppercase tracking-wider mb-3" style={{ color: 'var(--accent)', opacity: 0.9 }}>Core Deliverables</h4>
+                <ul className={styles.bulletList}>
+                  <li className="mb-2"><ChevronRight size={16} className="text-muted" /> <strong>Systems Thinking Capability:</strong> Strengthening strategic decision-making.</li>
+                  <li className="mb-2"><ChevronRight size={16} className="text-muted" /> <strong>Storytelling as Strategy:</strong> Using narrative tools to evoke commitment.</li>
+                  <li className="mt-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}><Target size={16} className="text-accent" /> <strong className="text-accent">Outcome:</strong> AI-Enabled Strategic Sensemaking for accelerated scenario exploration.</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -124,11 +172,16 @@ export default async function SpeakingWorkshopsPage() {
           <h2 className="section-title mb-4">Social <span className="accent-text">Proof</span></h2>
           <p className="text-muted mb-8 max-w-2xl mx-auto">Featured globally at premier summits, policy forums, and corporate offsites.</p>
           <div className="flex justify-center gap-4 flex-wrap mb-12">
-            <span className={styles.eventBadge}>Ai4 (Las Vegas)</span>
-            <span className={styles.eventBadge}>World Summit AI (Amsterdam)</span>
+            <span className={styles.eventBadge}>Davos AI 2026</span>
+            <span className={styles.eventBadge}>World AI Summit (San Francisco)</span>
             <span className={styles.eventBadge}>UNESCO Policy Consortium</span>
-            <span className={styles.eventBadge}>Global AI Ethics Forum</span>
-            <span className={styles.eventBadge}>T-Hub Innovation Summit</span>
+            <span className={styles.eventBadge}>AI London Summit</span>
+            <span className={styles.eventBadge}>WEBIT 2025</span>
+          </div>
+
+          <div className="bg-dark p-6 rounded border border-gray mb-12 text-left" style={{ maxWidth: '800px', margin: '0 auto 48px' }}>
+            <h3 className="text-accent mb-3 text-lg">2026 Global Recognition Award</h3>
+            <p className="text-muted">Awarded to the AI Research Centre (AIRC) at Woxsen University for outstanding contributions to applied AI research and workforce development.</p>
           </div>
           
           <div className="grid-2 text-left">
