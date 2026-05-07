@@ -45,7 +45,7 @@ export default async function Home() {
               <Link href="/leadership-advisory" className="btn btn-outline" style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.2)' }}>
                 Explore Advisory &amp; Board Roles
               </Link>
-              <Link href="/consulting-services" className="btn btn-outline" style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.2)' }}>
+              <Link href="/ai-consulting" className="btn btn-outline" style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.2)' }}>
                 Discuss Consulting Services / Projects
               </Link>
               <Link href="/speaking-workshops" className="btn btn-outline" style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.2)' }}>
@@ -122,7 +122,7 @@ export default async function Home() {
               <p>Strategic AI and governance advisor for companies, cities and universities.</p>
               <span className={styles.cardLink}>Learn More <ArrowRight size={16} /></span>
             </Link>
-            <Link href="/consulting-services" className={styles.workCard}>
+            <Link href="/ai-consulting" className={styles.workCard}>
               <Zap size={36} className={styles.cardIcon} />
               <h3>Consulting Services</h3>
               <p>AI roadmaps, governance frameworks and pilots for aviation, smart cities, education and finance.</p>
