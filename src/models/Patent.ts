@@ -5,6 +5,7 @@ export interface IPatent {
   date?: string;
   link?: string;
   order?: number;
+  publishedIn?: string;
   createdAt?: Date;
 }
 
@@ -14,6 +15,7 @@ const PatentSchema = new mongoose.Schema<IPatent>(
     date: { type: String },
     link: { type: String },
     order: { type: Number, default: 0 },
+    publishedIn: { type: String },
   },
   { timestamps: true }
 );

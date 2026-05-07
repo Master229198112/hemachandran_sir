@@ -38,6 +38,7 @@ interface PatentItem {
   date?: string;
   link?: string;
   order?: number;
+  publishedIn?: string;
 }
 
 interface PartnerItem {
@@ -64,6 +65,7 @@ interface BookItem {
   amazonLink?: string;
   publisherLink?: string;
   format: string;
+  publishedIn?: string;
 }
 
 interface PubItem {
@@ -75,6 +77,7 @@ interface PubItem {
   type: 'Journal' | 'Article';
   thumbnail?: string;
   description?: string;
+  publishedIn?: string;
 }
 
 const ITEMS_PER_PAGE = 10;
@@ -105,12 +108,12 @@ export default function AdminDashboard() {
 
   // Book form state
   const [bookForm, setBookForm] = useState({
-    title: '', publisher: '', publishedDate: '', coverImage: '', amazonLink: '', publisherLink: '', format: 'Paperback'
+    title: '', publisher: '', publishedDate: '', coverImage: '', amazonLink: '', publisherLink: '', format: 'Paperback', publishedIn: ''
   });
 
   // Publication form state
   const [pubForm, setPubForm] = useState({
-    title: '', authors: '', date: '', link: '', type: 'Journal' as 'Journal' | 'Article', thumbnail: '', description: ''
+    title: '', authors: '', date: '', link: '', type: 'Journal' as 'Journal' | 'Article', thumbnail: '', description: '', publishedIn: ''
   });
 
   // Affiliation form state
@@ -120,7 +123,7 @@ export default function AdminDashboard() {
 
   // Patent form state
   const [patentForm, setPatentForm] = useState({
-    title: '', date: '', link: '', order: 0
+    title: '', date: '', link: '', order: 0, publishedIn: ''
   });
 
   // Event form state
@@ -135,10 +138,10 @@ export default function AdminDashboard() {
 
   const resetForms = () => {
     setEditingId(null);
-    setBookForm({ title: '', publisher: '', publishedDate: '', coverImage: '', amazonLink: '', publisherLink: '', format: 'Paperback' });
-    setPubForm({ title: '', authors: '', date: '', link: '', type: 'Journal', thumbnail: '', description: '' });
+    setBookForm({ title: '', publisher: '', publishedDate: '', coverImage: '', amazonLink: '', publisherLink: '', format: 'Paperback', publishedIn: '' });
+    setPubForm({ title: '', authors: '', date: '', link: '', type: 'Journal', thumbnail: '', description: '', publishedIn: '' });
     setAffilForm({ name: '', img: '', order: 0 });
-    setPatentForm({ title: '', date: '', link: '', order: 0 });
+    setPatentForm({ title: '', date: '', link: '', order: 0, publishedIn: '' });
     setEventForm({ title: '', startDate: '', endDate: '', location: '', description: '', imageUrl: '', link: '' });
     setPartnerForm({ name: '', imageUrl: '', type: 'client', order: 0 });
   };
@@ -232,7 +235,7 @@ export default function AdminDashboard() {
     refreshData();
   };
   const startEditBook = (b: BookItem) => {
-    setBookForm({ ...b, amazonLink: b.amazonLink || '', publisherLink: b.publisherLink || '' });
+    setBookForm({ ...b, amazonLink: b.amazonLink || '', publisherLink: b.publisherLink || '', publishedIn: b.publishedIn || '' });
     setEditingId(b._id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -252,7 +255,7 @@ export default function AdminDashboard() {
     refreshData();
   };
   const startEditPub = (p: PubItem) => {
-    setPubForm({ ...p, thumbnail: p.thumbnail || '', description: p.description || '' });
+    setPubForm({ ...p, thumbnail: p.thumbnail || '', description: p.description || '', publishedIn: p.publishedIn || '' });
     setEditingId(p._id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -292,7 +295,7 @@ export default function AdminDashboard() {
     refreshData();
   };
   const startEditPatent = (p: PatentItem) => {
-    setPatentForm({ ...p, date: p.date || '', link: p.link || '', order: p.order || 0 });
+    setPatentForm({ ...p, date: p.date || '', link: p.link || '', order: p.order || 0, publishedIn: p.publishedIn || '' });
     setEditingId(p._id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -456,6 +459,7 @@ export default function AdminDashboard() {
 
               <input placeholder="Amazon Link" value={bookForm.amazonLink} onChange={e => setBookForm({...bookForm, amazonLink: e.target.value})} />
               <input placeholder="Publisher Link" value={bookForm.publisherLink} onChange={e => setBookForm({...bookForm, publisherLink: e.target.value})} />
+              <input placeholder="Published In (e.g. Springer, Wiley)" value={bookForm.publishedIn} onChange={e => setBookForm({...bookForm, publishedIn: e.target.value})} />
             </div>
             <button type="submit" className="btn btn-primary" style={{ marginTop: 12 }}>{editingId ? 'Save Changes' : 'Add Book'}</button>
           </form>
@@ -509,6 +513,7 @@ export default function AdminDashboard() {
               )}
 
               <input placeholder="Description (for Articles)" value={pubForm.description} onChange={e => setPubForm({...pubForm, description: e.target.value})} />
+              <input placeholder="Published In (e.g. IEEE, Elsevier, Journal Name)" value={pubForm.publishedIn} onChange={e => setPubForm({...pubForm, publishedIn: e.target.value})} />
             </div>
             <button type="submit" className="btn btn-primary" style={{ marginTop: 12 }}>{editingId ? 'Save Changes' : 'Add Publication'}</button>
           </form>
@@ -585,6 +590,7 @@ export default function AdminDashboard() {
               <input placeholder="Patent Title *" value={patentForm.title} onChange={e => setPatentForm({...patentForm, title: e.target.value})} required />
               <input placeholder="Date (Optional)" value={patentForm.date} onChange={e => setPatentForm({...patentForm, date: e.target.value})} />
               <input placeholder="Link URL (Optional)" value={patentForm.link} onChange={e => setPatentForm({...patentForm, link: e.target.value})} />
+              <input placeholder="Published In (e.g. Patent Office Name)" value={patentForm.publishedIn} onChange={e => setPatentForm({...patentForm, publishedIn: e.target.value})} />
               <input type="number" placeholder="Sort Order" value={patentForm.order} onChange={e => setPatentForm({...patentForm, order: parseInt(e.target.value) || 0})} />
             </div>
             <button type="submit" className="btn btn-primary" style={{ marginTop: 12 }}>{editingId ? 'Save Changes' : 'Add Patent'}</button>

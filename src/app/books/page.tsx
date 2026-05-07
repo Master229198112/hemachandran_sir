@@ -3,39 +3,53 @@ export const dynamic = 'force-dynamic';
 import dbConnect from '@/lib/mongodb';
 import Book from '@/models/Book';
 import Publication from '@/models/Publication';
+import Patent from '@/models/Patent';
 import { getDynamicCounts } from '@/lib/getDynamicCounts';
-import Settings from '@/models/Settings';
 import BooksPageClientWrapper from './BooksPageClientWrapper';
+
+function parseDateForSort(dateStr: string): number {
+  const d = new Date(dateStr);
+  return isNaN(d.getTime()) ? 0 : d.getTime();
+}
 
 async function getData() {
   try {
     await dbConnect();
-    const books = await Book.find({}).sort({ createdAt: -1 }).lean();
+    const rawBooks = await Book.find({}).lean();
+    const books = rawBooks.sort((a: { publishedDate?: string }, b: { publishedDate?: string }) => parseDateForSort(b.publishedDate || '') - parseDateForSort(a.publishedDate || ''));
+
     const pubs = await Publication.find({}).sort({ createdAt: -1 }).lean();
+    const patents = await Patent.find({}).sort({ order: 1, createdAt: -1 }).lean();
     const counts = await getDynamicCounts();
 
-    const journals = pubs.filter((p: { type?: string }) => p.type === 'Journal');
-    const articles = pubs.filter((p: { type?: string }) => p.type === 'Article' || !p.type);
-    
+    const journals = pubs
+      .filter((p: { type?: string }) => p.type === 'Journal')
+      .sort((a: { date?: string }, b: { date?: string }) => parseDateForSort(b.date || '') - parseDateForSort(a.date || ''));
+
+    const conferences = pubs
+      .filter((p: { type?: string }) => p.type === 'Article' || !p.type)
+      .sort((a: { date?: string }, b: { date?: string }) => parseDateForSort(b.date || '') - parseDateForSort(a.date || ''));
+
     // We mock the curated "Start Here" list using the most recent combinations
     const startHereData = [
       { title: books[0]?.title || "AI For Enterprise Growth", desc: "A definitive guide to scaling operations using quantum-ready AI frameworks.", type: "Book" },
       { title: journals[0]?.title || "Ethical AI in Modern Governance", desc: "Frameworks for identifying and mitigating bias in civic machine learning systems.", type: "Journal Article" },
       { title: books[1]?.title || "The Necrobotics Paradigm", desc: "Foundational textbook on bio-inspired manipulation mechanisms for micro-robotics.", type: "Book" },
       { title: journals[1]?.title || "Predictive Matrices in Electoral AI", desc: "Analysis of quantum-probability impacts on multivariable geopolitical forecasts.", type: "Case Study" },
-      { title: articles[0]?.title || "Transforming Universities with AR", desc: "A practical roadmap for Deans executing spatial computing curricula.", type: "Conference Paper" },
-      { title: articles[1]?.title || "Baggage Flow AI Optimization", desc: "Computer vision application study reducing transport hub friction.", type: "Report" },
+      { title: conferences[0]?.title || "Transforming Universities with AR", desc: "A practical roadmap for Deans executing spatial computing curricula.", type: "Conference Paper" },
+      { title: conferences[1]?.title || "Baggage Flow AI Optimization", desc: "Computer vision application study reducing transport hub friction.", type: "Report" },
     ].filter(i => i.title);
 
     return {
       books: JSON.parse(JSON.stringify(books)),
       journals: JSON.parse(JSON.stringify(journals)),
-      articles: JSON.parse(JSON.stringify(articles)),
+      conferences: JSON.parse(JSON.stringify(conferences)),
+      patents: JSON.parse(JSON.stringify(patents)),
       startHereData,
       counts
     };
   } catch {
-    return { books: [], journals: [], articles: [], startHereData: [], counts: {} };
+    return { books: [], journals: [], conferences: [], patents: [], startHereData: [], counts: {} };
   }
 }
 
@@ -56,8 +70,9 @@ export default async function BooksPage() {
       startHereData={data.startHereData}
       books={data.books}
       journals={data.journals}
-      conferences={data.articles}
-      cases={data.articles.slice().reverse()} // Mocking cases since we don't have explicit DB separation
+      conferences={data.conferences}
+      patents={data.patents}
+      cases={data.conferences}
     />
   );
 }

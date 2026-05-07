@@ -8,6 +8,7 @@ export interface IBook extends Document {
   amazonLink?: string;
   publisherLink?: string;
   format: string;
+  publishedIn?: string;
 }
 
 const BookSchema: Schema = new Schema({
@@ -18,6 +19,7 @@ const BookSchema: Schema = new Schema({
   amazonLink: { type: String },
   publisherLink: { type: String },
   format: { type: String, default: 'Paperback' },
+  publishedIn: { type: String },
 }, { timestamps: true });
 
 export default mongoose.models.Book || mongoose.model<IBook>('Book', BookSchema);

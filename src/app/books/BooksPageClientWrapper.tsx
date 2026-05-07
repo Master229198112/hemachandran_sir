@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { ExternalLink, BookOpen, Quote, FileText, Presentation } from 'lucide-react';
+import { ExternalLink, BookOpen, Quote, FileText, Presentation, Shield } from 'lucide-react';
 import styles from './books.module.css';
 
 interface StartHereItem {
@@ -17,6 +17,7 @@ interface PublicationItem {
   date?: string;
   link?: string;
   amazonLink?: string;
+  publishedIn?: string;
 }
 
 interface BooksWrapperProps {
@@ -25,6 +26,7 @@ interface BooksWrapperProps {
   books: PublicationItem[];
   journals: PublicationItem[];
   conferences: PublicationItem[];
+  patents: PublicationItem[];
   cases: PublicationItem[];
 }
 
@@ -34,6 +36,7 @@ export default function BooksPageClientWrapper({
   books,
   journals,
   conferences,
+  patents,
   cases
 }: BooksWrapperProps) {
   const [activeTab, setActiveTab] = useState('books');
@@ -48,6 +51,7 @@ export default function BooksPageClientWrapper({
     { id: 'books', label: 'Books', icon: <BookOpen size={16} />, data: books },
     { id: 'journals', label: 'Journal Articles', icon: <FileText size={16} />, data: journals },
     { id: 'conferences', label: 'Conference Papers', icon: <Presentation size={16} />, data: conferences },
+    { id: 'patents', label: 'Patents', icon: <Shield size={16} />, data: patents },
     { id: 'cases', label: 'Cases & Reports', icon: <Quote size={16} />, data: cases },
   ];
 
@@ -113,6 +117,11 @@ export default function BooksPageClientWrapper({
                   {item.authors && <p className="text-sm text-muted mb-2">{item.authors}</p>}
                   {item.publisher && <p className="text-sm text-muted mb-2">{item.publisher} - {item.publishedDate}</p>}
                   {item.date && <p className="text-sm text-muted mb-2">{item.date}</p>}
+                  {item.publishedIn && (
+                    <p className="text-xs text-accent mb-2" style={{ opacity: 0.85 }}>
+                      Published in: {item.publishedIn}
+                    </p>
+                  )}
                   
                   {hrefLink && (
                     <span className="text-accent text-sm font-bold flex gap-1 align-center mt-4 inline-flex">

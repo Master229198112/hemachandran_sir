@@ -8,6 +8,7 @@ export interface IPublication extends Document {
   type: 'Journal' | 'Article';
   thumbnail?: string; // mostly for Articles
   description?: string; // mostly for Articles
+  publishedIn?: string; // journal/conference/publisher name
 }
 
 const PublicationSchema: Schema = new Schema({
@@ -18,6 +19,7 @@ const PublicationSchema: Schema = new Schema({
   type: { type: String, enum: ['Journal', 'Article'], required: true },
   thumbnail: { type: String },
   description: { type: String },
+  publishedIn: { type: String },
 }, { timestamps: true });
 
 export default mongoose.models.Publication || mongoose.model<IPublication>('Publication', PublicationSchema);
