@@ -2,8 +2,12 @@ import mongoose from 'mongoose';
 
 export interface IPatent {
   title: string;
-  date?: string;
+  number: string;
+  inventor?: string;
+  status: 'Patent issued' | 'Patent pending';
+  date: string;
   link?: string;
+  description: string;
   order?: number;
   publishedIn?: string;
   createdAt?: Date;
@@ -12,8 +16,12 @@ export interface IPatent {
 const PatentSchema = new mongoose.Schema<IPatent>(
   {
     title: { type: String, required: true },
-    date: { type: String },
+    number: { type: String, required: true },
+    inventor: { type: String },
+    status: { type: String, enum: ['Patent issued', 'Patent pending'], required: true },
+    date: { type: String, required: true },
     link: { type: String },
+    description: { type: String, required: true },
     order: { type: Number, default: 0 },
     publishedIn: { type: String },
   },

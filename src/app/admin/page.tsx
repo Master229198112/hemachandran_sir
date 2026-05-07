@@ -35,8 +35,12 @@ interface EventItem {
 interface PatentItem {
   _id: string;
   title: string;
-  date?: string;
+  number: string;
+  inventor?: string;
+  status: 'Patent issued' | 'Patent pending';
+  date: string;
   link?: string;
+  description: string;
   order?: number;
   publishedIn?: string;
 }
@@ -123,7 +127,7 @@ export default function AdminDashboard() {
 
   // Patent form state
   const [patentForm, setPatentForm] = useState({
-    title: '', date: '', link: '', order: 0, publishedIn: ''
+    title: '', number: '', inventor: '', status: 'Patent pending' as 'Patent issued' | 'Patent pending', date: '', link: '', description: '', order: 0, publishedIn: ''
   });
 
   // Event form state
@@ -141,7 +145,7 @@ export default function AdminDashboard() {
     setBookForm({ title: '', publisher: '', publishedDate: '', coverImage: '', amazonLink: '', publisherLink: '', format: 'Paperback', publishedIn: '' });
     setPubForm({ title: '', authors: '', date: '', link: '', type: 'Journal', thumbnail: '', description: '', publishedIn: '' });
     setAffilForm({ name: '', img: '', order: 0 });
-    setPatentForm({ title: '', date: '', link: '', order: 0, publishedIn: '' });
+    setPatentForm({ title: '', number: '', inventor: '', status: 'Patent pending', date: '', link: '', description: '', order: 0, publishedIn: '' });
     setEventForm({ title: '', startDate: '', endDate: '', location: '', description: '', imageUrl: '', link: '' });
     setPartnerForm({ name: '', imageUrl: '', type: 'client', order: 0 });
   };
@@ -295,7 +299,7 @@ export default function AdminDashboard() {
     refreshData();
   };
   const startEditPatent = (p: PatentItem) => {
-    setPatentForm({ ...p, date: p.date || '', link: p.link || '', order: p.order || 0, publishedIn: p.publishedIn || '' });
+    setPatentForm({ ...p, date: p.date || '', link: p.link || '', order: p.order || 0, publishedIn: p.publishedIn || '', number: p.number || '', inventor: p.inventor || '', status: p.status || 'Patent pending', description: p.description || '' });
     setEditingId(p._id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -588,8 +592,18 @@ export default function AdminDashboard() {
             </div>
             <div className={styles.formGrid}>
               <input placeholder="Patent Title *" value={patentForm.title} onChange={e => setPatentForm({...patentForm, title: e.target.value})} required />
-              <input placeholder="Date (Optional)" value={patentForm.date} onChange={e => setPatentForm({...patentForm, date: e.target.value})} />
-              <input placeholder="Link URL (Optional)" value={patentForm.link} onChange={e => setPatentForm({...patentForm, link: e.target.value})} />
+              <input placeholder="Patent or Application Number *" value={patentForm.number} onChange={e => setPatentForm({...patentForm, number: e.target.value})} required />
+              <input placeholder="Inventor Name" value={patentForm.inventor} onChange={e => setPatentForm({...patentForm, inventor: e.target.value})} />
+              
+              <select value={patentForm.status} onChange={e => setPatentForm({...patentForm, status: e.target.value as 'Patent issued' | 'Patent pending'})} required>
+                <option value="Patent pending">Patent pending</option>
+                <option value="Patent issued">Patent issued</option>
+              </select>
+
+              <input placeholder="Issue Date / Filing Date *" value={patentForm.date} onChange={e => setPatentForm({...patentForm, date: e.target.value})} required />
+              <input placeholder="Patent URL" value={patentForm.link} onChange={e => setPatentForm({...patentForm, link: e.target.value})} />
+              <input placeholder="Description *" value={patentForm.description} onChange={e => setPatentForm({...patentForm, description: e.target.value})} required />
+              
               <input placeholder="Published In (e.g. Patent Office Name)" value={patentForm.publishedIn} onChange={e => setPatentForm({...patentForm, publishedIn: e.target.value})} />
               <input type="number" placeholder="Sort Order" value={patentForm.order} onChange={e => setPatentForm({...patentForm, order: parseInt(e.target.value) || 0})} />
             </div>
@@ -601,7 +615,7 @@ export default function AdminDashboard() {
               <div key={pat._id} className={styles.item}>
                 <div>
                   <h4>{pat.title}</h4>
-                  <p>{pat.date} {pat.link && <span>· <a href={pat.link} target="_blank" rel="noreferrer" style={{color: 'var(--accent)'}}>Link</a></span>}</p>
+                  <p className="text-sm text-muted">{pat.number} · {pat.status} · {pat.date} {pat.link && <span>· <a href={pat.link} target="_blank" rel="noreferrer" style={{color: 'var(--accent)'}}>Link</a></span>}</p>
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <button onClick={() => startEditPatent(pat)} className={styles.deleteBtn} style={{ color: 'var(--accent)' }}><Edit2 size={16} /></button>

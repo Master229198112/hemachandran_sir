@@ -34,7 +34,7 @@ async function getData() {
     const startHereData = [
       { title: books[0]?.title || "AI For Enterprise Growth", desc: "A definitive guide to scaling operations using quantum-ready AI frameworks.", type: "Book" },
       { title: journals[0]?.title || "Ethical AI in Modern Governance", desc: "Frameworks for identifying and mitigating bias in civic machine learning systems.", type: "Journal Article" },
-      { title: books[1]?.title || "The Necrobotics Paradigm", desc: "Foundational textbook on bio-inspired manipulation mechanisms for micro-robotics.", type: "Book" },
+      { title: patents[0]?.title || "Intelligent Automation Systems", desc: patents[0]?.description || "A novel approach to automated patent analysis and processing.", type: "Patent" },
       { title: journals[1]?.title || "Predictive Matrices in Electoral AI", desc: "Analysis of quantum-probability impacts on multivariable geopolitical forecasts.", type: "Case Study" },
       { title: conferences[0]?.title || "Transforming Universities with AR", desc: "A practical roadmap for Deans executing spatial computing curricula.", type: "Conference Paper" },
       { title: conferences[1]?.title || "Baggage Flow AI Optimization", desc: "Computer vision application study reducing transport hub friction.", type: "Report" },

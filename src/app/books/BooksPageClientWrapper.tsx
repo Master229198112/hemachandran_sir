@@ -18,6 +18,12 @@ interface PublicationItem {
   link?: string;
   amazonLink?: string;
   publishedIn?: string;
+  number?: string;
+  inventor?: string;
+  status?: string;
+  description?: string;
+  coverImage?: string;
+  publisherLink?: string;
 }
 
 interface BooksWrapperProps {
@@ -58,7 +64,7 @@ export default function BooksPageClientWrapper({
   const currentData = tabs.find((t) => t.id === activeTab)?.data || [];
 
   // Pagination logic
-  const itemsPerPage = 10;
+  const itemsPerPage = activeTab === 'books' ? 9 : 8;
   const totalPages = Math.ceil(currentData.length / itemsPerPage);
   const displayData = currentData.slice(
     (currentPage - 1) * itemsPerPage,
@@ -107,16 +113,43 @@ export default function BooksPageClientWrapper({
             ))}
           </div>
 
-          <div className="grid-2 mt-8">
+          <div className={`mt-8 ${activeTab === 'books' ? 'grid-3' : 'grid-2'}`}>
             {displayData.map((item: PublicationItem, idx: number) => {
-              const hrefLink = item.link || item.amazonLink;
+              const hrefLink = item.link || item.amazonLink || item.publisherLink;
               
+              if (activeTab === 'books') {
+                return (
+                  <a key={idx} href={hrefLink || '#'} target={hrefLink ? "_blank" : "_self"} rel="noreferrer" className={styles.bookCard}>
+                    {item.coverImage && (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={item.coverImage} alt={item.title} className={styles.bookCover} />
+                    )}
+                    <div className={styles.bookOverlay}>
+                      <h4 className={styles.bookTitle}>{item.title}</h4>
+                      {item.publisher && <p className={styles.bookMeta}>{item.publisher}<br/>{item.publishedDate}</p>}
+                      {item.publishedIn && <p className="text-xs text-accent mb-4">Published in: {item.publishedIn}</p>}
+                      
+                      {hrefLink && (
+                        <span className="btn btn-primary btn-sm inline-flex align-center gap-2 mt-4">
+                          View Book <ExternalLink size={14} />
+                        </span>
+                      )}
+                    </div>
+                  </a>
+                );
+              }
+
               const CardContent = (
                 <>
                   <h4 className="text-lg mb-2">{item.title}</h4>
                   {item.authors && <p className="text-sm text-muted mb-2">{item.authors}</p>}
-                  {item.publisher && <p className="text-sm text-muted mb-2">{item.publisher} - {item.publishedDate}</p>}
+                  
+                  {item.number && <p className="text-sm text-muted mb-1 font-bold">{item.number} {item.status && <span className="font-normal opacity-80">· {item.status}</span>}</p>}
+                  {item.inventor && <p className="text-sm text-muted mb-2">Inventor: {item.inventor}</p>}
+                  
                   {item.date && <p className="text-sm text-muted mb-2">{item.date}</p>}
+                  {item.description && <p className="text-sm text-muted mb-4 mt-2">{item.description}</p>}
+                  
                   {item.publishedIn && (
                     <p className="text-xs text-accent mb-2" style={{ opacity: 0.85 }}>
                       Published in: {item.publishedIn}
@@ -125,7 +158,7 @@ export default function BooksPageClientWrapper({
                   
                   {hrefLink && (
                     <span className="text-accent text-sm font-bold flex gap-1 align-center mt-4 inline-flex">
-                      View Publication <ExternalLink size={14} />
+                      View <ExternalLink size={14} />
                     </span>
                   )}
                 </>
